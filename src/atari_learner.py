@@ -43,12 +43,8 @@ agent.run(num_episodes=3)
 
 # log_q_values = rl.LogQValues()
 # log_reward = rl.LogReward()
-
 log_q_values = agent.log_q_values
 log_reward = agent.log_reward
-
-# log_q_values.write()
-# log_reward.write()
 
 log_q_values.read()
 log_reward.read()
