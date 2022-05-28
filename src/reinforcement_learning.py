@@ -1097,7 +1097,7 @@ class NeuralNetwork:
     better at estimating the Q-values.
     """
 
-    def __init__(self, num_actions, replay_memory):
+    def __init__(self, num_actions, replay_memory, config_identifier=''):
         """
         :param num_actions:
             Number of discrete actions for the game-environment.
@@ -1105,6 +1105,8 @@ class NeuralNetwork:
         :param replay_memory:
             Object-instance of the ReplayMemory-class.
         """
+
+        prefix = config_identifier + '_'
 
         # Replay-memory used for sampling random batches.
         self.replay_memory = replay_memory
@@ -1115,7 +1117,7 @@ class NeuralNetwork:
         # Placeholder variable for inputting states into the Neural Network.
         # A state is a multi-dimensional array holding image-frames from
         # the game-environment.
-        self.x = tf.placeholder(dtype=tf.float32, shape=[None] + state_shape, name='x')
+        self.x = tf.placeholder(dtype=tf.float32, shape=[None] + state_shape, name= prefix + 'x')
 
         # Placeholder variable for inputting the learning-rate to the optimizer.
         self.learning_rate = tf.placeholder(dtype=tf.float32, shape=[])
@@ -1191,19 +1193,19 @@ class NeuralNetwork:
         net = self.x
 
         # First convolutional layer.
-        net = tf.layers.conv2d(inputs=net, name='layer_conv1',
+        net = tf.layers.conv2d(inputs=net, name=prefix + 'layer_conv1',
                                filters=16, kernel_size=3, strides=2,
                                padding=padding,
                                kernel_initializer=init, activation=activation)
 
         # Second convolutional layer.
-        net = tf.layers.conv2d(inputs=net, name='layer_conv2',
+        net = tf.layers.conv2d(inputs=net, name=prefix + 'layer_conv2',
                                filters=32, kernel_size=3, strides=2,
                                padding=padding,
                                kernel_initializer=init, activation=activation)
 
         # Third convolutional layer.
-        net = tf.layers.conv2d(inputs=net, name='layer_conv3',
+        net = tf.layers.conv2d(inputs=net, name=prefix + 'layer_conv3',
                                filters=64, kernel_size=3, strides=1,
                                padding=padding,
                                kernel_initializer=init, activation=activation)
@@ -1213,23 +1215,23 @@ class NeuralNetwork:
         net = tf.layers.flatten(net)
 
         # First fully-connected (aka. dense) layer.
-        net = tf.layers.dense(inputs=net, name='layer_fc1', units=1024,
+        net = tf.layers.dense(inputs=net, name=prefix + 'layer_fc1', units=1024,
                               kernel_initializer=init, activation=activation)
 
         # Second fully-connected layer.
-        net = tf.layers.dense(inputs=net, name='layer_fc2', units=1024,
+        net = tf.layers.dense(inputs=net, name=prefix + 'layer_fc2', units=1024,
                               kernel_initializer=init, activation=activation)
 
         # Third fully-connected layer.
-        net = tf.layers.dense(inputs=net, name='layer_fc3', units=1024,
+        net = tf.layers.dense(inputs=net, name=prefix + 'layer_fc3', units=1024,
                               kernel_initializer=init, activation=activation)
 
         # Fourth fully-connected layer.
-        net = tf.layers.dense(inputs=net, name='layer_fc4', units=1024,
+        net = tf.layers.dense(inputs=net, name=prefix + 'layer_fc4', units=1024,
                               kernel_initializer=init, activation=activation)
 
         # Final fully-connected layer.
-        net = tf.layers.dense(inputs=net, name='layer_fc_out', units=num_actions,
+        net = tf.layers.dense(inputs=net, name=prefix + 'layer_fc_out', units=num_actions,
                               kernel_initializer=init, activation=None)
 
         # The output of the Neural Network is the estimated Q-values
@@ -1515,7 +1517,7 @@ class Agent:
     instances of the Replay Memory and Neural Network.
     """
 
-    def __init__(self, env_name, training, render=False, use_logging=True):
+    def __init__(self, env_name, training, render=False, use_logging=True, config_identifier=''):
         """
         Create an object-instance. This also creates a new object for the
         Replay Memory and the Neural Network.
@@ -1629,7 +1631,8 @@ class Agent:
 
         # Create the Neural Network used for estimating Q-values.
         self.model = NeuralNetwork(num_actions=self.num_actions,
-                                   replay_memory=self.replay_memory)
+                                   replay_memory=self.replay_memory,
+                                   config_identifier=config_identifier)
 
         # Log of the rewards obtained in each episode during calls to run()
         self.episode_rewards = []
