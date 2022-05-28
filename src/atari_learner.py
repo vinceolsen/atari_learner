@@ -28,16 +28,19 @@ gym.__version__
 # env_name = 'SpaceInvaders-v0'
 
 
-def run_experiment(experiment_configurations: []):
+def run_training_and_testing_experiment(experiment_configurations: []):
     for experiment_configuration in experiment_configurations:
         env_name = experiment_configuration['env_name']
         training_episodes = experiment_configuration['training_episodes']
         testing_episodes = experiment_configuration['testing_episodes']
         learning_rate = experiment_configuration['learning_rate']
         discount_factor = experiment_configuration['discount_factor']
+        epsilon = experiment_configuration['epsilon']
+        experiment_name = experiment_configuration['experiment_name']
 
-        config_identifier = env_name + '_' + str(training_episodes) + 'training_episodes_' + str(testing_episodes) + 'testing_episodes_'+ str(learning_rate) + 'lr_' + str(
-            discount_factor) + 'discount'
+        config_identifier = experiment_name + '_' + env_name + '_' + str(training_episodes) + 'training_episodes_' \
+                            + str(testing_episodes) + 'testing_episodes_' + str(learning_rate) + 'lr_' \
+                            + str(discount_factor) + 'discount'
 
         rl.checkpoint_base_dir = 'results/' + now + '_checkpoints_tutorial16/'
 
@@ -47,7 +50,10 @@ def run_experiment(experiment_configurations: []):
                          training=True,
                          render=True,
                          use_logging=True,
-                         config_identifier=config_identifier)
+                         config_identifier=config_identifier,
+                         epsilon=epsilon,
+                         starting_learning_rate=learning_rate,
+                         discount_factor=discount_factor)
 
         model = agent.model
 
@@ -91,6 +97,7 @@ def run_experiment(experiment_configurations: []):
         # agent.render = True
         agent.render = False
 
+        # testing the agent occurs here
         agent.run(num_episodes=testing_episodes)
 
         rewards = agent.episode_rewards
@@ -100,7 +107,7 @@ def run_experiment(experiment_configurations: []):
         reward_string += "- Max:   " + str(np.max(rewards)) + "\n"
         reward_string += "- Stdev: " + str(np.std(rewards)) + "\n"
         print(reward_string)
-        with open(rl.checkpoint_base_dir + "Rewards_" + config_identifier+ ".txt", "w") as text_file:
+        with open(rl.checkpoint_base_dir + "Rewards_" + config_identifier + ".txt", "w") as text_file:
             text_file.write(reward_string)
 
         plt.hist(rewards, bins=testing_episodes)
@@ -142,24 +149,77 @@ def print_q_values(agent, idx):
 
 if __name__ == '__main__':
     print('starting')
-    num_training_episodes = 2
-    num_testing_episodes = 2
-    experiment_configs = [
-        {
-            'env_name': 'Breakout-v0',
-            'training_episodes': num_training_episodes,
-            'testing_episodes': num_testing_episodes,
-            'learning_rate': 0.9,
-            'discount_factor': 0.97,
-            'epsilon': 0.1
-        },
-        {
-            'env_name': 'SpaceInvaders-v0',
-            'training_episodes': num_training_episodes,
-            'testing_episodes': num_testing_episodes,
-            'learning_rate': 0.9,
-            'discount_factor': 0.97,
-            'epsilon': 0.1
-        }
+    num_training_episodes = 500
+    num_testing_episodes = 50
+    default_learning_rate = 0.001
+    default_discount_factor = 0.97
+    default_epsilon = 0.1
+
+    # experiments
+    # original_tutorial_experiment = {
+    #     'env_name': 'Breakout-v0',
+    #     'training_episodes': num_training_episodes,
+    #     'testing_episodes': num_testing_episodes,
+    #     'learning_rate': default_learning_rate,
+    #     'discount_factor': default_discount_factor,
+    #     'epsilon': default_epsilon,
+    #     'experiment_name': 'original_tutorial_experiment'
+    # }
+
+    pong_default = {  # pong_small_learning_rate_large_discount
+        'env_name': 'Pong-v0',
+        'training_episodes': num_training_episodes,
+        'testing_episodes': num_testing_episodes,
+        'learning_rate': default_learning_rate,
+        'discount_factor': default_discount_factor,
+        'epsilon': default_epsilon,
+        'experiment_name': 'pong_default'
+    }
+
+    pong_large_learning_rate = {
+        'env_name': 'Pong-v0',
+        'training_episodes': num_training_episodes,
+        'testing_episodes': num_testing_episodes,
+        'learning_rate': .5,
+        'discount_factor': default_discount_factor,
+        'epsilon': default_epsilon,
+        'experiment_name': 'pong_large_learning_rate'
+    }
+
+    # pong_large_learning_rate_small_discount = {
+    #     'env_name': 'Pong-v0',
+    #     'training_episodes': num_training_episodes,
+    #     'testing_episodes': num_testing_episodes,
+    #     'learning_rate': .5,
+    #     'discount_factor': .1,
+    #     'epsilon': default_epsilon,
+    #     'experiment_name': 'pong_large_learning_rate_small_discount'
+    # }
+
+    pong_small_small_discount = {
+        'env_name': 'Pong-v0',
+        'training_episodes': num_training_episodes,
+        'testing_episodes': num_testing_episodes,
+        'learning_rate': default_learning_rate,
+        'discount_factor': .1,
+        'epsilon': default_epsilon,
+        'experiment_name': 'pong_small_small_discount'
+    }
+
+    pong_large_epsilon = {
+        'env_name': 'Pong-v0',
+        'training_episodes': num_training_episodes,
+        'testing_episodes': num_testing_episodes,
+        'learning_rate': default_learning_rate,
+        'discount_factor': default_discount_factor,
+        'epsilon': 0.9,
+        'experiment_name': 'pong_large_epsilon'
+    }
+
+    training_and_testing_experiment_configs = [
+        pong_default,
+        pong_large_learning_rate,
+        pong_small_small_discount,
+        pong_large_epsilon
     ]
-    run_experiment(experiment_configs)
+    run_training_and_testing_experiment(training_and_testing_experiment_configs)

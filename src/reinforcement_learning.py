@@ -1097,7 +1097,7 @@ class NeuralNetwork:
     better at estimating the Q-values.
     """
 
-    def __init__(self, num_actions, replay_memory, config_identifier=''):
+    def __init__(self, num_actions, replay_memory, config_identifier='', nn='original'):
         """
         :param num_actions:
             Number of discrete actions for the game-environment.
@@ -1117,7 +1117,7 @@ class NeuralNetwork:
         # Placeholder variable for inputting states into the Neural Network.
         # A state is a multi-dimensional array holding image-frames from
         # the game-environment.
-        self.x = tf.placeholder(dtype=tf.float32, shape=[None] + state_shape, name= prefix + 'x')
+        self.x = tf.placeholder(dtype=tf.float32, shape=[None] + state_shape, name=prefix + 'x')
 
         # Placeholder variable for inputting the learning-rate to the optimizer.
         self.learning_rate = tf.placeholder(dtype=tf.float32, shape=[])
@@ -1517,7 +1517,8 @@ class Agent:
     instances of the Replay Memory and Neural Network.
     """
 
-    def __init__(self, env_name, training, render=False, use_logging=True, config_identifier=''):
+    def __init__(self, env_name, training, render=False, use_logging=True, config_identifier='',
+                 epsilon=0.05, nn='original', starting_learning_rate=1e-3, discount_factor=0.97):
         """
         Create an object-instance. This also creates a new object for the
         Replay Memory and the Neural Network.
@@ -1572,13 +1573,13 @@ class Agent:
                                             end_value=0.1,
                                             num_iterations=1e6,
                                             num_actions=self.num_actions,
-                                            epsilon_testing=0.01)
+                                            epsilon_testing=epsilon)
 
         if self.training:
             # The following control-signals are only used during training.
 
             # The learning-rate for the optimizer decreases linearly.
-            self.learning_rate_control = LinearControlSignal(start_value=1e-3,
+            self.learning_rate_control = LinearControlSignal(start_value=starting_learning_rate,
                                                              end_value=1e-5,
                                                              num_iterations=5e6)
 
@@ -1625,14 +1626,16 @@ class Agent:
             # 3 GB RAM (105 x 80 x 2 x 200000 bytes).
 
             self.replay_memory = ReplayMemory(size=200000,
-                                              num_actions=self.num_actions)
+                                              num_actions=self.num_actions,
+                                              discount_factor=discount_factor)
         else:
             self.replay_memory = None
 
         # Create the Neural Network used for estimating Q-values.
         self.model = NeuralNetwork(num_actions=self.num_actions,
                                    replay_memory=self.replay_memory,
-                                   config_identifier=config_identifier)
+                                   config_identifier=config_identifier,
+                                   nn=nn)
 
         # Log of the rewards obtained in each episode during calls to run()
         self.episode_rewards = []
