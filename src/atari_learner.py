@@ -44,7 +44,7 @@ def run_training_and_testing_experiment(experiment_configurations: []):
 
         rl.checkpoint_base_dir = 'results/' + now + '_checkpoints_tutorial16/'
 
-        rl.update_paths(env_name=env_name)
+        rl.update_paths(env_name=env_name, file_suffix=config_identifier)
 
         agent = rl.Agent(env_name=env_name,
                          training=True,
@@ -149,8 +149,8 @@ def print_q_values(agent, idx):
 
 if __name__ == '__main__':
     print('starting')
-    num_training_episodes = 500
-    num_testing_episodes = 50
+    num_training_episodes = 1000
+    num_testing_episodes = 100
     default_learning_rate = 0.001
     default_discount_factor = 0.97
     default_epsilon = 0.1

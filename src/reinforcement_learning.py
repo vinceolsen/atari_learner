@@ -191,7 +191,7 @@ log_reward_path = None
 log_q_values_path = None
 
 
-def update_paths(env_name):
+def update_paths(env_name, file_suffix=''):
     """
     Update the path-names for the checkpoint-dir and log-files.
 
@@ -214,10 +214,10 @@ def update_paths(env_name):
         os.makedirs(checkpoint_dir)
 
     # File-path for the log-file for episode rewards.
-    log_reward_path = os.path.join(checkpoint_dir, "log_reward.txt")
+    log_reward_path = os.path.join(checkpoint_dir, "log_reward" + "_" + file_suffix + ".txt")
 
     # File-path for the log-file for Q-values.
-    log_q_values_path = os.path.join(checkpoint_dir, "log_q_values.txt")
+    log_q_values_path = os.path.join(checkpoint_dir, "log_q_values" + "_" + file_suffix + ".txt")
 
 
 ########################################################################
