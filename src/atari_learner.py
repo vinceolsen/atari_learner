@@ -175,17 +175,17 @@ if __name__ == '__main__':
         'epsilon': default_epsilon,
         'experiment_name': 'pong_default'
     }
-
-    pong_large_learning_rate = {
-        'env_name': 'Pong-v0',
-        'training_episodes': num_training_episodes,
-        'testing_episodes': num_testing_episodes,
-        'learning_rate': .5,
-        'discount_factor': default_discount_factor,
-        'epsilon': default_epsilon,
-        'experiment_name': 'pong_large_learning_rate'
-    }
-
+    #
+    # pong_large_learning_rate = {
+    #     'env_name': 'Pong-v0',
+    #     'training_episodes': num_training_episodes,
+    #     'testing_episodes': num_testing_episodes,
+    #     'learning_rate': .5,
+    #     'discount_factor': default_discount_factor,
+    #     'epsilon': default_epsilon,
+    #     'experiment_name': 'pong_large_learning_rate'
+    # }
+    #
     # pong_large_learning_rate_small_discount = {
     #     'env_name': 'Pong-v0',
     #     'training_episodes': num_training_episodes,
@@ -195,31 +195,74 @@ if __name__ == '__main__':
     #     'epsilon': default_epsilon,
     #     'experiment_name': 'pong_large_learning_rate_small_discount'
     # }
+    #
+    # pong_small_small_discount = {
+    #     'env_name': 'Pong-v0',
+    #     'training_episodes': num_training_episodes,
+    #     'testing_episodes': num_testing_episodes,
+    #     'learning_rate': default_learning_rate,
+    #     'discount_factor': .1,
+    #     'epsilon': default_epsilon,
+    #     'experiment_name': 'pong_small_small_discount'
+    # }
+    #
+    # pong_large_epsilon = {
+    #     'env_name': 'Pong-v0',
+    #     'training_episodes': num_training_episodes,
+    #     'testing_episodes': num_testing_episodes,
+    #     'learning_rate': default_learning_rate,
+    #     'discount_factor': default_discount_factor,
+    #     'epsilon': 0.9,
+    #     'experiment_name': 'pong_large_epsilon'
+    # }
 
-    pong_small_small_discount = {
+    experiment_1 = {
         'env_name': 'Pong-v0',
         'training_episodes': num_training_episodes,
         'testing_episodes': num_testing_episodes,
-        'learning_rate': default_learning_rate,
-        'discount_factor': .1,
-        'epsilon': default_epsilon,
-        'experiment_name': 'pong_small_small_discount'
+        'learning_rate': .003,
+        'discount_factor': default_discount_factor,
+        'epsilon': 0,
+        'experiment_name': 'experiment_1'
     }
 
-    pong_large_epsilon = {
+    experiment_2 = {
         'env_name': 'Pong-v0',
         'training_episodes': num_training_episodes,
         'testing_episodes': num_testing_episodes,
         'learning_rate': default_learning_rate,
         'discount_factor': default_discount_factor,
-        'epsilon': 0.9,
-        'experiment_name': 'pong_large_epsilon'
+        'epsilon': 0,
+        'experiment_name': 'experiment_2'
+    }
+
+    experiment_3 = {
+        'env_name': 'Pong-v0',
+        'training_episodes': num_training_episodes,
+        'testing_episodes': num_testing_episodes,
+        'learning_rate': .0005,
+        'discount_factor': default_discount_factor,
+        'epsilon': 0,
+        'experiment_name': 'experiment_3'
+    }
+
+    experiment_4 = pong_default
+
+    experiment_5 = {
+        'env_name': 'Pong-v0',
+        'training_episodes': num_training_episodes,
+        'testing_episodes': num_testing_episodes,
+        'learning_rate': default_learning_rate,
+        'discount_factor': default_discount_factor,
+        'epsilon': .99,
+        'experiment_name': 'experiment_5'
     }
 
     training_and_testing_experiment_configs = [
-        pong_default,
-        pong_large_learning_rate,
-        pong_small_small_discount,
-        pong_large_epsilon
+        experiment_1,
+        experiment_2,
+        experiment_3,
+        experiment_4,
+        experiment_5
     ]
     run_training_and_testing_experiment(training_and_testing_experiment_configs)
